@@ -1,0 +1,91 @@
+<html>
+<head>
+<script type="text/javascript" src="js/swfupload.graceful_degradation.js"></script>
+<script type="text/javascript" src="js/swfupload.swfobject.js"></script>
+<script type="text/javascript" src="js/swfupload.cookies.js"></script>
+<script type="text/javascript" src="js/swfupload.queue.js"></script>
+<script type="text/javascript" src="js/swfupload.js"></script>
+<script type="text/javascript" src="js/dragdrop.js"></script>
+<script type="text/javascript" src="js/handlers.js"></script>
+<link href="css/default.css" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript">
+		var swfu;
+		window.onload = function () {
+			swfu = new SWFUpload({
+			
+				upload_url: "upload.php",
+				post_params: {"PHPSESSID": "8195hmhed2g20sgb58pv78lk90"},
+				file_size_limit : "1048",	// 2MB
+				file_types : "*.jpg",
+				file_types_description : "JPG Images",
+				file_upload_limit : "20",
+				file_post_name : "Filedata",
+
+				file_queue_error_handler : fileQueueError,
+				file_dialog_complete_handler : fileDialogComplete,
+				upload_progress_handler : uploadProgress,
+				upload_error_handler : uploadError,
+				upload_success_handler : uploadSuccess,
+				upload_complete_handler : uploadComplete,
+
+				flash_url : "swfupload_f9.swf",
+				custom_settings : {
+				upload_target : "divFileProgressContainer"
+				
+				},
+				debug: false
+			});
+		};
+		
+	</script>
+</head>
+<body>
+
+<div id="content">
+	<br />
+	<form>
+		<input type="button" id="btnBrowse" name="btnBrowse" value="Selecione as imagens (2 MB)" onclick="swfu.selectFiles(); this.blur();"/>
+	</form>
+		<div id="divFileProgressContainer" style="height: 75px;"></div>
+		
+	<div id="thumbnails">
+		<div class="imageBox" id="imageBox0">
+			<div><img src="imgs/delete.png"></div>
+		</div>
+		<div class="imageBox" id="imageBox1"></div>
+		<div class="imageBox" id="imageBox2"></div>
+		<div class="imageBox" id="imageBox3"></div>
+		<div class="imageBox" id="imageBox4"></div>
+		<div class="imageBox" id="imageBox5"></div>
+		<div class="imageBox" id="imageBox6"></div>
+		<div class="imageBox" id="imageBox7"></div>
+		<div class="imageBox" id="imageBox8"></div>
+		<div class="imageBox" id="imageBox9"></div>
+		<div class="imageBox" id="imageBox10"></div>
+		<div class="imageBox" id="imageBox11"></div>
+		<div class="imageBox" id="imageBox12"></div>
+		<div class="imageBox" id="imageBox13"></div>
+		<div class="imageBox" id="imageBox14"></div>
+		<div class="imageBox" id="imageBox15"></div>
+		<div class="imageBox" id="imageBox16"></div>
+		<div class="imageBox" id="imageBox17"></div>
+		<div class="imageBox" id="imageBox18"></div>
+		<div class="imageBox" id="imageBox19"></div>
+		<div class="imageBox" id="imageBox20"></div>
+	</div>
+</div>
+<div id="dragDropContent"></div>
+<div id="debug" style="clear:both"></div>
+<div id="insertionMarker">
+	<img src="marker_top.gif">
+	<img src="marker_middle.gif" id="insertionMarkerLine">
+	<img src="marker_bottom.gif">
+</div>
+<script>
+	VerifyOpenerChildren();
+</script>
+
+</body>
+
+</html>

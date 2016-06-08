@@ -1,0 +1,119 @@
+<!--
+==========================================================================
+============================ CódigoFonte.net =============================
+==========================================================================
+   Adicione este código entre os campos <BODY> aqui </BODY> de seu site, 
+     utilizando um editor de textos (Bloco de Notas) ou um editor HTML     
+=======  Duvidas acesse nosso fórum: http://forum.codigofonte.net ========
+==========================================================================
+==========================================================================
+-->
+
+
+<style>
+   <!--
+   #ie5menu{
+   position:absolute;
+   width:120px;
+   border:1px solid black;
+   background-color:menu;
+   font-family:Verdana;
+   font-size: 11px;
+   line-height:17px;
+   cursor:default;
+   visibility:hidden;
+   }
+   .menuitems{
+   padding-left:15px;
+   padding-right:15px;
+   }
+   -->
+   </style>
+   <script language="JavaScript1.2">
+   
+   var IE = false;
+
+	if (navigator.appName == "Microsoft Internet Explorer"){
+	IE = true
+	}
+	if (!IE){
+	document.captureEvents(Event.MOUSEMOVE)
+	}
+	var display_url=0
+	
+function getMouseXY(m){
+	var menu = window.document.getElementById("menu");
+	if (IE) {
+		var tmpX = event.clientX;
+		var tmpY = event.clientY;	
+	}else {
+	
+		var tmpX = m.pageX;
+		var tmpY = m.pageY;
+	
+	}
+	
+	var rightedge  = document.body.clientWidth-tmpX;
+   	var bottomedge = document.body.clientHeight-tmpY;
+	
+	if (rightedge<menu.offsetWidth){
+		menu.style.left = document.body.scrollLeft + tmpX - menu.offsetWidth
+   	}else{
+   		menu.style.left=document.body.scrollLeft + tmpX
+   }
+   
+   if (bottomedge<menu.offsetHeight){
+   	    menu.style.top= document.body.scrollTop + tmpY - menu.offsetHeight
+   }else{
+   		menu.style.top=document.body.scrollTop + tmpY
+   }
+   
+   	menu.style.visibility="visible"
+   
+	//alert(rightedge);
+	return false
+}
+function hidemenuie5(){
+   ie5menu.style.display = "none";
+}
+
+function highlightie5(){
+   if (event.srcElement.className=="menuitems"){
+   
+   		event.srcElement.style.backgroundColor="highlight";
+   		event.srcElement.style.color="white";
+   		if (display_url==1){
+   			window.status=event.srcElement.url;
+   		}
+   }
+}   
+function lowlightie5(){
+
+   if (event.srcElement.className=="menuitems"){
+   		window.event.srcElement.style.backgroundColor="";
+   		window.event.srcElement.style.color="black";
+   		window.status='';
+   }
+}
+function jumptoie5(){
+   if (event.srcElement.className=="menuitems")
+   		window.location=event.srcElement.url;
+}
+   </script>
+  
+  clique com o botão direito do mouse para ver o script em ação. 
+   
+   <div id="menu" onClick="jumptoie5()" style="display:none;">
+   <div class="menuitems" url="http://opcao1.htm">Opção 1</div>
+   <div class="menuitems" url="http://opcao2.htm">Opção 2</div>
+   <div class="menuitems" url="http://opcao3.htm">Opção 3</div>
+   <div class="menuitems" url="http://opcao4.htm">Opção 4</div>
+   <div class="menuitems" url="http://opcao5.htm">Opção 5</div>
+   <hr>
+   <div class="menuitems" url="mailto:seu@email.aqui">Email</div>
+   </div>
+  
+  
+   <script language="JavaScript1.2">
+   document.oncontextmenu=getMouseXY
+   </script>

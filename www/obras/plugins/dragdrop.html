@@ -1,0 +1,473 @@
+<html>
+<head>
+	<title>Floating image gallery with drag &amp; drop</title>
+	<meta name="Author" content="Alf Magne Kalleland (post@dhtmlgoodies.com)">
+<META NAME="Generator" CONTENT="Alf Magne Kalleland (www.dhtmlgoodies.com)">
+<meta name="KeyWords" content="DHTML, HTML, Dynamic HTML,CSS, Menu, Menus,Drag and drop, Drag, Drop, Cross-browser, Cross browser, Examples, Javascript, Free, Javascripts, Cascading Style Sheet, Crossbrowser,Alf Magne Kalleland, Batalf, minesweeper">
+<meta name="Description" content="A library of DHTML and Ajax scripts">
+<meta name="country" content="Norway">
+<meta name="organization-Email" content="post@dhtmlgoodies.com">
+<meta name="copyright" content="copyright 2005 - Alf Magne Kalleland">
+<meta name="coverage" content="Worldwide">
+<meta name="revisit_after" content="30days">
+<meta name="title" content="A library DHTML and Ajax scripts - DHTMLgoodies.com">
+
+<meta name="identifier" content="http://www.dhtmlgoodies.com/">
+<meta name="language" content="English">
+<meta name="robots" content="follow">
+<meta name="googlebot" content="index, follow">
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+// _uacct = "UA-85864-2";
+_uacct = "UA-2042963-1";
+urchinTracker();
+</script>
+		
+	<style type="text/css">
+	body{
+		/*
+		You can remove these four options 
+		
+		*/
+		background-image:url('http://www.dhtmlgoodies.com/images/heading3.gif');
+		background-repeat:no-repeat;
+		padding-top:85px;	
+		font-family: Trebuchet MS, Lucida Sans Unicode, Arial, sans-serif;
+		
+		
+		height:100%;
+		width:100%;
+		margin:10px;
+		padding-left:0px;
+	}
+	
+	form{
+		display:inline;
+	}
+	.imageBox,.imageBoxHighlighted{
+		width:130px;	/* Total width of each image box */
+		height:160px;	/* Total height of each image box */
+		float:left;
+	}
+	.imageBox_theImage{
+		width:110px;	/* Width of image */
+		height:125px;	/* Height of image */
+		
+		/* 
+		Don't change these values *
+		*/
+		background-position: center center;
+		background-repeat: no-repeat;		
+		margin: 0 auto;
+		margin-bottom:2px;
+	}
+	
+	.imageBox .imageBox_theImage{
+		border:1px solid #DDD;	/* Border color for not selected images */
+		padding:2px;
+	}
+	.imageBoxHighlighted .imageBox_theImage{
+		border:3px solid #316AC5;	/* Border color for selected image */
+		padding:0px;
+
+	}
+	.imageBoxHighlighted span{	/* Title of selected image */
+		background-color: #316AC5;
+		color:#FFFFFF;
+		padding:2px;
+	}
+	
+	.imageBox_label{	/* Title of images - both selected and not selected */
+		text-align:center;
+		font-family: arial;
+		font-size:11px;		
+		padding-top:2px;
+		margin: 0 auto;
+	}
+	
+	/* 
+	DIV that indicates where the dragged image will be placed	
+	*/
+	#insertionMarker{
+		height:150px;
+		width:6px;
+		position:absolute;
+		display:none;
+
+	}
+	
+	#insertionMarkerLine{
+		width:6px;	/* No need to change this value */
+		height:145px;	/* To adjust the height of the div that indicates where the dragged image will be dropped */
+	
+	}
+		
+	#insertionMarker img{
+		float:left;
+	}
+	
+	/*
+	DIV that shows the image as you drag it 
+	*/
+	#dragDropContent{
+
+		opacity:0.4;	/* 40 % opacity */
+		filter:alpha(opacity=40);	/* 40 % opacity */
+
+		/* 
+		No need to change these three values 
+		*/
+		position:absolute;
+		z-index:10;
+		display:none;
+			
+	}
+	
+
+	</style>
+	<script type="text/javascript">
+	/************************************************************************************************************
+	(C) www.dhtmlgoodies.com, September 2005
+	
+	This is a script from www.dhtmlgoodies.com. You will find this and a lot of other scripts at our website.	
+	
+	Terms of use:
+	LGPL: See web page for more info.
+	
+	Thank you!
+	
+	www.dhtmlgoodies.com
+	Alf Magne Kalleland
+	
+	************************************************************************************************************/	
+	var operaBrowser = false;
+	if(navigator.userAgent.indexOf('Opera')>=0)operaBrowser=1;
+	var MSIE = navigator.userAgent.indexOf('MSIE')>=0?true:false;
+	var navigatorVersion = navigator.appVersion.replace(/.*?MSIE (\d\.\d).*/g,'$1')/1;
+
+	
+	function cancelEvent()
+	{
+		return false;
+	}
+	var activeImage = false;
+	var readyToMove = false;
+	var moveTimer = -1;
+	var dragDropDiv;
+	var insertionMarker;
+	
+	var offsetX_marker = -3;	// offset X - element that indicates destinaton of drop
+	var offsetY_marker = 0;	// offset Y - element that indicates destinaton of drop
+	
+	var firefoxOffsetX_marker = -3;
+	var firefoxOffsetY_marker = -2;
+	
+	if(navigatorVersion<6 && MSIE){	/* IE 5.5 fix */
+		offsetX_marker-=23;
+		offsetY_marker-=10;		
+	}
+	
+	var destinationObject = false;
+	
+	var divXPositions = new Array();
+	var divYPositions = new Array();
+	var divWidth = new Array();
+	var divHeight = new Array();
+		
+	var tmpLeft = 0;
+	var tmpTop = 0;
+	
+	var eventDiff_x = 0;
+	var eventDiff_y = 0;
+		
+	function getTopPos(inputObj)
+	{		
+	  var returnValue = inputObj.offsetTop;
+	  while((inputObj = inputObj.offsetParent) != null){
+	  	if(inputObj.tagName!='HTML'){
+	  		returnValue += (inputObj.offsetTop - inputObj.scrollTop);
+	  		if(document.all)returnValue+=inputObj.clientTop;
+	  	}
+	  } 
+	  return returnValue;
+	}
+	function getLeftPos(inputObj)
+	{	  
+	  var returnValue = inputObj.offsetLeft;
+	  while((inputObj = inputObj.offsetParent) != null){
+	  	if(inputObj.tagName!='HTML'){
+	  		returnValue += inputObj.offsetLeft;
+	  		if(document.all)returnValue+=inputObj.clientLeft;
+	  	}
+	  }
+	  return returnValue;
+	}
+		
+	function selectImage(e)
+	{
+		if(document.all && !operaBrowser)e = event;
+		var obj = this.parentNode;
+		if(activeImage)activeImage.className='imageBox';
+		obj.className = 'imageBoxHighlighted';
+		activeImage = obj;
+		readyToMove = true;
+		moveTimer=0;
+		
+		tmpLeft = e.clientX + Math.max(document.body.scrollLeft,document.documentElement.scrollLeft);
+		tmpTop = e.clientY + Math.max(document.body.scrollTop,document.documentElement.scrollTop);
+		
+		startMoveTimer();	
+		
+		
+		return false;	
+	}
+	
+	function startMoveTimer(){
+		if(moveTimer>=0 && moveTimer<10){
+			moveTimer++;
+			setTimeout('startMoveTimer()',15);
+		}
+		if(moveTimer==10){
+			getDivCoordinates();
+			var subElements = dragDropDiv.getElementsByTagName('DIV');
+			if(subElements.length>0){
+				dragDropDiv.removeChild(subElements[0]);
+			}
+		
+			dragDropDiv.style.display='block';
+			var newDiv = activeImage.cloneNode(true);
+			newDiv.className='imageBox';	
+			newDiv.id='';
+			dragDropDiv.appendChild(newDiv);	
+			
+			dragDropDiv.style.top = tmpTop + 'px';
+			dragDropDiv.style.left = tmpLeft + 'px';
+							
+		}
+		return false;
+	}
+	
+	function dragDropEnd()
+	{
+		readyToMove = false;
+		moveTimer = -1;
+
+		dragDropDiv.style.display='none';
+		insertionMarker.style.display='none';
+		
+		if(destinationObject && destinationObject!=activeImage){
+			var parentObj = destinationObject.parentNode;
+			parentObj.insertBefore(activeImage,destinationObject);
+			activeImage.className='imageBox';
+			activeImage = false;
+			destinationObject=false;
+			getDivCoordinates();
+		}
+		return false;
+	}
+	
+	function dragDropMove(e)
+	{
+		if(moveTimer==-1)return;
+		if(document.all && !operaBrowser)e = event;
+		var leftPos = e.clientX + document.documentElement.scrollLeft - eventDiff_x;
+		var topPos = e.clientY + document.documentElement.scrollTop - eventDiff_y;
+		dragDropDiv.style.top = topPos + 'px';
+		dragDropDiv.style.left = leftPos + 'px';
+		
+		leftPos = leftPos + eventDiff_x;
+		topPos = topPos + eventDiff_y;
+		
+		if(e.button!=1 && document.all &&  !operaBrowser)dragDropEnd();
+		var elementFound = false;
+		for(var prop in divXPositions){
+			if(divXPositions[prop]/1 < leftPos/1 && (divXPositions[prop]/1 + divWidth[prop]*0.7)>leftPos/1 && divYPositions[prop]/1<topPos/1 && (divYPositions[prop]/1 + divWidth[prop])>topPos/1){
+				
+				if(document.all ){
+					offsetX = offsetX_marker;
+					offsetY = offsetY_marker;
+				}else{
+					offsetX = firefoxOffsetX_marker;
+					offsetY = firefoxOffsetY_marker;
+				}
+				insertionMarker.style.top = divYPositions[prop] + offsetY + 'px';
+				insertionMarker.style.left = divXPositions[prop] + offsetX + 'px';
+				insertionMarker.style.display='block';	
+				destinationObject = document.getElementById(prop);
+				elementFound = true;	
+				break;	
+			}				
+		}
+		
+		
+		if(!elementFound){
+			insertionMarker.style.display='none';
+			destinationObject = false;
+		}
+		
+		return false;
+		
+	}
+	
+
+	
+	function getDivCoordinates()
+	{
+		var divs = document.getElementsByTagName('DIV');
+		for(var no=0;no<divs.length;no++){	
+			if(divs[no].className=='imageBox' || divs[no].className=='imageBoxHighlighted' && divs[no].id){
+				divXPositions[divs[no].id] = getLeftPos(divs[no]);			
+				divYPositions[divs[no].id] = getTopPos(divs[no]);			
+				divWidth[divs[no].id] = divs[no].offsetWidth;			
+				divHeight[divs[no].id] = divs[no].offsetHeight;			
+			}		
+		}
+	}
+	
+	function saveImageOrder()
+	{
+		var orderString = "";
+		var objects = document.getElementsByTagName('DIV');
+		for(var no=0;no<objects.length;no++){
+			if(objects[no].className=='imageBox' || objects[no].className=='imageBoxHighlighted'){
+				if(orderString.length>0)orderString = orderString + ',';
+				orderString = orderString + objects[no].id;
+			}			
+		}
+		
+		document.getElementById('debug').innerHTML = 'This is the new order of the images(IDs) : <br>' + orderString;
+		
+	}
+	
+	function initGallery()
+	{
+		var divs = document.getElementsByTagName('DIV');
+		for(var no=0;no<divs.length;no++){
+			if(divs[no].className=='imageBox_theImage' || divs[no].className=='imageBox_label'){
+				divs[no].onmousedown = selectImage;	
+
+			}
+		}
+		
+		var insObj = document.getElementById('insertionMarker');
+		var images = insObj.getElementsByTagName('IMG');
+		document.body.onselectstart = cancelEvent;
+		document.body.ondragstart = cancelEvent;
+		document.body.onmouseup = dragDropEnd;
+		document.body.onmousemove = dragDropMove;
+
+		
+		window.onresize = getDivCoordinates;
+		window.opener.onresize = getDivCoordinates;
+		
+		dragDropDiv = document.getElementById('dragDropContent');
+		PaidragDropDiv = window.opener.document.getElementById('dragDropContent');
+		
+		insertionMarker = document.getElementById('insertionMarker');
+		
+		getDivCoordinates();
+	}
+	
+	window.onload = initGallery;
+	
+	</script>
+</head>
+<body>
+
+With this script, you can reorganise the order of images by dragging and dropping them(as in a standard file manager). When you're finished, you can save the changes
+by a standard form submission or perhaps more elegant: by use of Ajax(Asyncron Javascript and XML).
+<form action="somePage.html" method="post">
+<div style="clear:both;padding-bottom:10px">
+	<input type="button" style="width:100px" value="Save" onclick="saveImageOrder()">
+</div>
+</form>
+
+	<div class="imageBox" id="imageBox0">
+		<div class="imageBox_theImage" style="background-image:url('example_images/image1.jpg')"></div>	
+		<div class="imageBox_label"><span>Image number 1</span></div>
+	</div>	
+		<div class="imageBox" id="imageBox1">
+
+		<div class="imageBox_theImage" style="background-image:url('example_images/image2.jpg')"></div>	
+		<div class="imageBox_label"><span>Image number 2</span></div>
+	</div>	
+		<div class="imageBox" id="imageBox2">
+		<div class="imageBox_theImage" style="background-image:url('example_images/image3.jpg')"></div>	
+		<div class="imageBox_label"><span>Image number 3</span></div>
+	</div>	
+		<div class="imageBox" id="imageBox3">
+		<div class="imageBox_theImage" style="background-image:url('example_images/image4.jpg')"></div>	
+		<div class="imageBox_label"><span>Image number 4</span></div>
+
+	</div>	
+		<div class="imageBox" id="imageBox4">
+		<div class="imageBox_theImage" style="background-image:url('example_images/image5.jpg')"></div>	
+		<div class="imageBox_label"><span>Image number 5</span></div>
+	</div>	
+		<div class="imageBox" id="imageBox5">
+		<div class="imageBox_theImage" style="background-image:url('example_images/image6.jpg')"></div>	
+		<div class="imageBox_label"><span>Image number 6</span></div>
+	</div>	
+		<div class="imageBox" id="imageBox6">
+
+		<div class="imageBox_theImage" style="background-image:url('example_images/image7.jpg')"></div>	
+		<div class="imageBox_label"><span>Image number 7</span></div>
+	</div>	
+		<div class="imageBox" id="imageBox7">
+		<div class="imageBox_theImage" style="background-image:url('example_images/image8.jpg')"></div>	
+		<div class="imageBox_label"><span>Image number 8</span></div>
+	</div>	
+		<div class="imageBox" id="imageBox8">
+		<div class="imageBox_theImage" style="background-image:url('example_images/image9.jpg')"></div>	
+		<div class="imageBox_label"><span>Image number 9</span></div>
+
+	</div>	
+		<div class="imageBox" id="imageBox9">
+		<div class="imageBox_theImage" style="background-image:url('example_images/image10.jpg')"></div>	
+		<div class="imageBox_label"><span>Image number 10</span></div>
+	</div>	
+		<div class="imageBox" id="imageBox10">
+		<div class="imageBox_theImage" style="background-image:url('example_images/image11.jpg')"></div>	
+		<div class="imageBox_label"><span>Image number 11</span></div>
+	</div>	
+		<div class="imageBox" id="imageBox11">
+
+		<div class="imageBox_theImage" style="background-image:url('example_images/image12.jpg')"></div>	
+		<div class="imageBox_label"><span>Image number 12</span></div>
+	</div>	
+		<div class="imageBox" id="imageBox12">
+		<div class="imageBox_theImage" style="background-image:url('example_images/image13.jpg')"></div>	
+		<div class="imageBox_label"><span>Image number 13</span></div>
+	</div>	
+		<div class="imageBox" id="imageBox13">
+		<div class="imageBox_theImage" style="background-image:url('example_images/image14.jpg')"></div>	
+		<div class="imageBox_label"><span>Image number 14</span></div>
+
+	</div>	
+		<div class="imageBox" id="imageBox14">
+		<div class="imageBox_theImage" style="background-image:url('example_images/image15.jpg')"></div>	
+		<div class="imageBox_label"><span>Image number 15</span></div>
+	</div>	
+	
+<div id="insertionMarker">
+	<img src="images/marker_top.gif">
+	<img src="images/marker_middle.gif" id="insertionMarkerLine">
+	<img src="images/marker_bottom.gif">
+</div>
+
+<div id="dragDropContent">
+</div>
+<div id="debug" style="clear:both">
+</div>
+<!-- Kontera ContentLink?  -->
+<SCRIPT LANGUAGE="JavaScript">
+var dc_UnitID = 14;
+var dc_PublisherID = 3695;
+var dc_AdLinkColor = 'blue';
+var dc_adprod='ADL';
+</SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" SRC="http://kona.kontera.com/javascript/lib/KonaLibInline.js"></SCRIPT>
+<!-- Kontera ContentLink?  --></body>
+</html>

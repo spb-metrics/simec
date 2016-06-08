@@ -1,0 +1,32 @@
+<html>
+<head>
+<script type="text/javascript">
+
+var IE = false;
+
+if (navigator.appName == "Microsoft Internet Explorer"){
+IE = true
+}
+if (!IE){
+document.captureEvents(Event.MOUSEMOVE)
+}
+document.oncontextmenu = getMouseXY;
+
+function getMouseXY(m){
+if (IE) {
+var tmpX = event.clientX;
+var tmpY = event.clientY;
+}
+else {
+var tmpX = m.pageX;
+var tmpY = m.pageY;
+
+}
+
+
+
+
+}
+
+
+</script>

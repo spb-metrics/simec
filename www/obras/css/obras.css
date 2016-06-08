@@ -1,0 +1,199 @@
+body,html{
+	margin: 0px;
+}
+#big_photo{
+	width: 645PX;
+	height: 485px;
+	border: 1px solid #CCC;
+	background-color: #ECE;
+	display:none;
+	top: 50%;
+	left: 50%;
+	margin: -220px 0px 0px -320px;
+	z-index:90;
+	position: relative;
+	text-align: center;
+	
+}
+
+iframe{
+	
+	margin: 0px;
+	background-color: white;
+	border: 0px;
+}
+#loading{
+	position: absolute;
+	border:1px solid #ccc;
+	padding: 25px;
+	width: 200px;
+	height:70px;
+	background-color: #f0f0f0;
+	margin: -35 0px 0px -100;
+	top: 50%;
+	left: 50%;
+	display: none;
+	z-index: 15;
+	font-family: sans-serif;
+	font-size: 10px;
+	text-align: left;
+	font-weight:bold;
+	color:red;
+	vertical-align: middle;
+}
+#image_right2{
+border: 1px solid white;
+position:absolute;
+width: 70px;
+height: 20px;
+background-color: black;
+margin-top:-60px;
+margin-left:-50%;
+top: 100%;
+left: 100%;
+float: right;
+z-index: 98px;
+font-family: verdana;
+font-size: 14px;
+color: white;
+text-align: center;
+padding: 10px;
+}
+#image_left2{
+border: 1px solid white;
+position:absolute;
+width: 70px;
+height: 20px;
+background-color: black;
+float: left;
+margin-top:-60px;
+margin-left:-100px;
+left: 50%;
+top: 100%;
+z-index: 98px;
+font-family: verdana;
+font-size: 14px;
+color: white;
+text-align: center;
+padding: 10px;
+	
+}
+
+
+
+#big_photo #close_Big_photo{
+	width: 50px;
+	height: 50px;
+	top: 0px;
+	margin-right: 2px;
+	float:right;
+	position: relative;	
+	cursor: pointer;
+}
+#thumbnails{
+	background-color:#CCCCCC;
+	width: 430px;
+	height: 480px;
+	border: 1px solid #888888;
+	float: left;
+	margin: 15px;
+}
+
+#thumbnails2{
+	background-color:#CCCCCC;
+	width: 430px;
+	height: 480px;
+	border: 1px solid #888888;
+	float: left;
+	margin: 15px;
+}
+
+#thumbnails3{
+	background-color:#cccccc;
+	width: 605px;
+	height: 265px;
+	border: 1px solid #888888;
+}
+
+.imageBoxClass{
+	position: relative;
+	border: 1px solid #888888;
+	background-color:#EEE;
+	width: 74px;
+	height: 74px;
+	margin: 5px;
+	float:left;
+}
+
+#thumbnails img{
+	border: 0px solid #CAC;
+}
+
+#thumbnails #imageBox0,#imageBox1,#imageBox2,
+#imageBox3,#imageBox4,#imageBox5,#imageBox6,
+#imageBox7,#imageBox8,#imageBox9,#imageBox10,
+#imageBox11,#imageBox12,#imageBox13,#imageBox14,
+#imageBox15,#imageBox16,#imageBox17,#imageBox18,
+#imageBox19,#imageBox20, #imageBox0Galeria,#imageBox1Galeria,#imageBox2Galeria,
+#imageBox3Galeria,#imageBox4Galeria,#imageBox5Galeria,#imageBox6Galeria,
+#imageBox7Galeria,#imageBox8Galeria,#imageBox9Galeria,#imageBox10Galeria,
+#imageBox11Galeria,#imageBox12Galeria,#imageBox13Galeria,#imageBox14Galeria,
+#imageBox15Galeria,#imageBox16Galeria,#imageBox17Galeria,#imageBox18Galeria,
+#imageBox19Galeria,#imageBox20Galeria{
+	position: relative;
+	border: 1px solid #888888;
+	background-color:#EEE;
+	width: 74px;
+	height: 107px;
+	margin: 5px;
+	float:left;
+}
+
+#dragDropContent{
+	opacity:0.4; /* 40 % opacity */
+	filter:alpha(opacity=40); /* 40 % opacity */
+
+	/*
+	No need to change these three values
+	*/
+	
+	position:absolute;
+	z-index:10;
+	display:none;
+}
+
+.imageBox,.imageBoxHighlighted{
+	width:70px;
+	height:70px;
+	float:left;
+	padding-top: 1px; 
+}
+
+.imageBox_theImage{
+	width:68px;
+	height:68px;
+	background-position: center center;
+	background-repeat: no-repeat;
+	margin: 2px 2px 2px 2px;
+}
+
+#insertionMarker{
+	height:70px;
+	width:6px;
+	position:absolute;
+	display:none;
+}
+
+#insertionMarkerLine{
+	width:6px;
+	height:76px;
+}
+
+#insertionMarker img{
+	float:left;
+}
+#content {
+	width:604px;
+	left: 50%;
+	float: left;
+}

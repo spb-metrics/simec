@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/simec2/!svn/ver/11/trunk/app/www/includes/layout/versao%20antiga
+END
+include_login.inc
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/simec2/!svn/ver/11/trunk/app/www/includes/layout/versao%20antiga/include_login.inc
+END
+include_simec.inc
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/simec2/!svn/ver/11/trunk/app/www/includes/layout/versao%20antiga/include_simec.inc
+END
